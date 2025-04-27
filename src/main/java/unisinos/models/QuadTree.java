@@ -1,5 +1,6 @@
 package unisinos.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuadTree<T> implements  QuadTreeADT<T> {
@@ -83,6 +84,21 @@ public class QuadTree<T> implements  QuadTreeADT<T> {
 
     @Override
     public List<Point> allPoints() {
-        return List.of();
+        List<Point> points = new ArrayList<>();
+        collectPoints(root, points);
+        return points;
+    }
+
+    private void collectPoints(Node<T> current, List<Point> points) {
+        if (current == null) {
+            return;
+        }
+    
+        points.add(new Point(current.X, current.Y));
+    
+        collectPoints(current.NW, points);
+        collectPoints(current.NE, points);
+        collectPoints(current.SE, points);
+        collectPoints(current.SW, points);
     }
 }
