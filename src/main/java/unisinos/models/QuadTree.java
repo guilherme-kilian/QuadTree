@@ -3,7 +3,7 @@ package unisinos.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuadTree<T> implements  QuadTreeADT<T> {
+public class QuadTree<T> implements QuadTreeADT<T> {
 
     public Node<T> root;
 
@@ -22,21 +22,17 @@ public class QuadTree<T> implements  QuadTreeADT<T> {
         root = insert(root, x, y, value);
     }
 
-    private Node<T> insert(Node<T> current, int x, int y, T value){
+    private Node<T> insert(Node<T> current, int x, int y, T value) {
 
-        if(current == null){
+        if (current == null) {
             return new Node<>(x, y, value);
-        }
-        else if(x < current.X && y >= current.Y){
+        } else if (x < current.X && y >= current.Y) {
             current.NW = insert(current.NW, x, y, value);
-        }
-        else if(x >= current.X && y >= current.Y){
+        } else if (x >= current.X && y >= current.Y) {
             current.NE = insert(current.NE, x, y, value);
-        }
-        else if(x < current.X){
+        } else if (x < current.X) {
             current.SW = insert(current.SW, x, y, value);
-        }
-        else{
+        } else {
             current.SE = insert(current.SE, x, y, value);
         }
 
@@ -66,19 +62,37 @@ public class QuadTree<T> implements  QuadTreeADT<T> {
         if (xMin < current.X && yMax >= current.Y) {
             query2D(current.NW, interval);
         }
-        if(xMin < current.X && yMin < current.Y) {
+        if (xMin < current.X && yMin < current.Y) {
             query2D(current.SW, interval);
         }
-        if(xMax >= current.X && yMax >= current.Y){
+        if (xMax >= current.X && yMax >= current.Y) {
             query2D(current.NE, interval);
         }
-        if(xMax >= current.X && yMin < current.Y){
+        if (xMax >= current.X && yMin < current.Y) {
             query2D(current.SE, interval);
         }
     }
 
     @Override
     public Node<T> search(Point point) {
+        Node<T> current = root;
+
+        while (current != null) {
+            if (current.X == point.X && current.Y == point.Y) {
+                return current;
+            }
+
+            if (point.X < current.X && point.Y >= current.Y) {
+                current = current.NW;
+            } else if (point.X >= current.X && point.Y >= current.Y) {
+                current = current.NE;
+            } else if (point.X < current.X) {
+                current = current.SW;
+            } else {
+                current = current.SE;
+            }
+        }
+
         return null;
     }
 
@@ -93,9 +107,9 @@ public class QuadTree<T> implements  QuadTreeADT<T> {
         if (current == null) {
             return;
         }
-    
+
         points.add(new Point(current.X, current.Y));
-    
+
         collectPoints(current.NW, points);
         collectPoints(current.NE, points);
         collectPoints(current.SE, points);
